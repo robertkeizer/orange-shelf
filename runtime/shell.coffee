@@ -1,31 +1,14 @@
-orange = require "../orange"
+log     = require( "logging" ).from __filename
+orange  = require "../orange"
+fs      = require "fs"
+path    = require "path"
 
 class Shell extends orange.OrangeRunnable
 
-    constructor: ( @environment, @out, @in ) ->
-
-        super( )
-
-        # Optionally hook into any environment changes we care
-        # about.
-        @environment.on "updated", ( what ) ->
-            log "Shell noticed that #{what} changed."
-
     start: ( cb ) ->
-        if cb
-            @addListener "started", cb
-
-        @started( )
+        super cb
 
         @runtime_loop( )
-
-    stop: ( cb ) ->
-        if cb
-            @addListener "stopped", cb
-
-        @in.removeAllListeners
-
-        @stopped( )
 
     prompt: ( ) ->
         _cwd = @environment.get "cwd"
@@ -33,10 +16,20 @@ class Shell extends orange.OrangeRunnable
         @out.write "#{@_id}:#{_cwd}>"
 
     parse_and_run: ( input ) ->
-        @out.write "\nWould parse '#{input}' as a command.\n"
+
+        _valid_path = false
+        for _path in @environment.get( "path" )
+            _possible_path = path.join _path, "#{input}.coffee"
+            if fs.existsSync _possible_path
+                _valid_path = _possible_path
+                break
+
+        if _valid_path isnt false
+            @out.write "I found the command '#{input}' (#{_valid_path})\n"
+        else
+            @out.write "Unknown command.\n"
 
     runtime_loop: ( ) ->
-        @out.write "\n"
         @prompt( )
 
         @in.on "data", ( chunk ) =>
