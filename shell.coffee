@@ -1,65 +1,7 @@
-events  = require "events"
+orange = require "./orange"
 
-class OrangeObject extends events.EventEmitter
-    # This is the basic object for everything
-    # on the orange shelf so to speak.
+class Shell extends orange.OrangeRunnable
 
-    # Everything has an identifier..
-    constructor: ( @_id ) ->
- 
-class OrangeEnvironment extends OrangeObject
-
-    # The orange environment is in effect a collection
-    # of key value pairs. Any updates to the environment
-    # fire off an event.
-
-    get: ( what, cb ) ->
-        # Simply return the value of @[what]. If it
-        # is undefined, that will be returned. Also
-        # note that the callback is optional.
-        if cb
-            return cb @[what]
-        return @[what]
-
-    set: ( key, val, cb ) ->
-
-        # Set the particular key to a val.
-        # There is no checking done to see if
-        # key already exists.
-
-        # This function calls @updated to signal
-        # that an update has taken place.
-
-        # cb is optional.
-
-        @[key] = val
-        if cb
-            @updated( )
-            return cb( )
-        @updated( )
-
-    updated: ( what ) ->
-        # Simply fire off an event that
-        # something has changed.
-
-        @emit "updated", what
-
-class Runnable extends OrangeObject
-    is_running: ( cb ) ->
-        if not @_running?
-            return false
-        @_running
-
-    started: ( ) ->
-        @_running       = true
-        @_time_started  = new Date( )
-        @emit "started"
-
-    stopped: ( ) ->
-        @_running = false
-        @emit "stopped"
-    
-class Shell extends Runnable
     constructor: ( @_id, @environment, @out, @in ) ->
 
         # Optionally hook into any environment changes we care
@@ -106,18 +48,4 @@ class Shell extends Runnable
         @in.on "end", ( ) =>
             @stop( )
 
-# Define a log mechanism. Also resume stdin read.
-log = require( "logging" ).from __filename
-process.stdin.resume( )
-
-# Create a simple environment
-env = new Environment "ARandomIdentifier"
-env.set "cwd", "/tmp"
-
-# Start a shell in that environment, using stdin and stdout.
-yas = new Shell "SomeIdentifier", env, process.stdout, process.stdin
-yas.start ( ) ->
-    log "Started yas shell!"
-
-yas.on "stopped", ( ) ->
-    log "YAS has stopped!"
+exports.Shell = Shell
