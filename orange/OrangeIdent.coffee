@@ -1,0 +1,2 @@
+exports.OrangeIdent = ( ) ->
+    "SomethingRandom"

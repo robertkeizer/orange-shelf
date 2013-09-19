@@ -1,8 +1,10 @@
-orange = require "./orange"
+orange = require "../orange"
 
 class Shell extends orange.OrangeRunnable
 
-    constructor: ( @_id, @environment, @out, @in ) ->
+    constructor: ( @environment, @out, @in ) ->
+
+        super( )
 
         # Optionally hook into any environment changes we care
         # about.
