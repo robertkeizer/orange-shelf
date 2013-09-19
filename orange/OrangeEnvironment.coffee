@@ -1,11 +1,4 @@
-events  = require "events"
-
-class OrangeObject extends events.EventEmitter
-    # This is the basic object for everything
-    # on the orange shelf so to speak.
-
-    # Everything has an identifier..
-    constructor: ( @_id ) ->
+OrangeObject  = require( "./OrangeObject" ).OrangeObject
 
 class OrangeEnvironment extends OrangeObject
 
@@ -44,21 +37,4 @@ class OrangeEnvironment extends OrangeObject
 
         @emit "updated", what
 
-class OrangeRunnable extends OrangeObject
-    is_running: ( cb ) ->
-        if not @_running?
-            return false
-        @_running
-
-    started: ( ) ->
-        @_running       = true
-        @_time_started  = new Date( )
-        @emit "started"
-
-    stopped: ( ) ->
-        @_running = false
-        @emit "stopped"
-
-exports.OrangeObject        = OrangeObject
-exports.OrangeEnvironment   = OrangeEnvironment
-exports.OrangeRunnable      = OrangeRunnable
+exports.OrangeEnvironment = OrangeEnvironment
