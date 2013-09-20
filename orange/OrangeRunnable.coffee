@@ -39,6 +39,5 @@ class OrangeRunnable extends OrangeObject
 
     error: ( msg ) ->
         @err.write msg
-        @stop( )
 
 exports.OrangeRunnable = OrangeRunnable
