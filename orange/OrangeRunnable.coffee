@@ -5,7 +5,7 @@ class OrangeRunnable extends OrangeObject
     constructor: ( @environment, @in, @out, @err ) ->
         super( )
 
-    start: ( cb ) ->
+    start: ( args, cb ) ->
         if cb
             @addListener "started", cb
 

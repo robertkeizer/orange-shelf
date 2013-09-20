@@ -3,7 +3,7 @@ fs  = require "fs"
 
 class ls extends OrangeRunnable
 
-    start: ( cb ) ->
+    start: ( args, cb ) ->
         super cb
 
         # TODO, parse input args to handle 

@@ -6,7 +6,7 @@ path    = require "path"
 
 class Shell extends orange.OrangeRunnable
 
-    start: ( cb ) ->
+    start: ( args, cb ) ->
         super cb
 
         @runtime_loop( )

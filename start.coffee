@@ -13,7 +13,7 @@ env.set "path", [ "runtime/" ]
 process.stdin.resume( )
 yas = new shell.Shell env, process.stdin, process.stdout, process.stderr
 
-yas.start ( ) ->
+yas.start null, ( ) ->
     log "Started yas shell!"
 
 yas.on "stopped", ( ) ->
