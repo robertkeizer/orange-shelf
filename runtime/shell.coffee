@@ -12,8 +12,6 @@ class shell extends orange.OrangeRunnable
             if err
                 return cb err
 
-            log "Started shell."
-
             # Initial prompt, nothing more.
             @prompt( )
 
@@ -36,7 +34,6 @@ class shell extends orange.OrangeRunnable
             # When we get stopped, remove the input listener.
             @once "stopped", ( ) =>
                 @in.removeListener "data", handle_input_chunks
-                log "Removed the input listeners for shell."
 
     prompt: ( ) ->
         _cwd = @environment.get "cwd"
@@ -46,7 +43,6 @@ class shell extends orange.OrangeRunnable
 
         # Builtins..
         if input is "quit"
-            #log "Stopping.."
             return @stop( )
 
 
