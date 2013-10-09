@@ -7,18 +7,12 @@ path    = require "path"
 
 class shell extends orange.OrangeRunnable
 
-    start: ( args, cb ) ->
-        # Call orange.OrangeRunnabel.start with arguments. 
-        # Note that we use the callback to verify no errors
-        # have come up ( Such as we're already started ).
-        super args, ( err ) ->
+    start: ( args ) ->
+        super args, ( err ) =>
             if err
                 return cb err
 
-            # Let everyone know that we're starting.
-            cb( )
-
-            #log "Starting shell"
+            log "Started shell."
 
             # Initial prompt, nothing more.
             @prompt( )
@@ -42,7 +36,7 @@ class shell extends orange.OrangeRunnable
             # When we get stopped, remove the input listener.
             @once "stopped", ( ) =>
                 @in.removeListener "data", handle_input_chunks
-                #log "Removed the input listeners for shell."
+                log "Removed the input listeners for shell."
 
     prompt: ( ) ->
         _cwd = @environment.get "cwd"

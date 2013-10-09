@@ -18,3 +18,4 @@ yas.start null, ( ) ->
 
 yas.once "stopped", ( ) ->
     log "YAS has stopped!"
+    process.stdin.pause( )
