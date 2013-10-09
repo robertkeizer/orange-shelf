@@ -16,6 +16,5 @@ yas = new shell.shell env, process.stdin, process.stdout, process.stderr
 yas.start null, ( ) ->
     log "Started yas shell!"
 
-yas.on "stopped", ( ) ->
+yas.once "stopped", ( ) ->
     log "YAS has stopped!"
-

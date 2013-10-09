@@ -8,26 +8,56 @@ path    = require "path"
 class shell extends orange.OrangeRunnable
 
     start: ( args, cb ) ->
-        log "Starting shell"
-        super cb
+        # Call orange.OrangeRunnabel.start with arguments. 
+        # Note that we use the callback to verify no errors
+        # have come up ( Such as we're already started ).
+        super args, ( err ) ->
+            if err
+                return cb err
 
-        @runtime_loop( )
+            # Let everyone know that we're starting.
+            cb( )
+
+            #log "Starting shell"
+
+            # Initial prompt, nothing more.
+            @prompt( )
+
+            # Define the function that will handle the chunks coming in off of input.
+            handle_input_chunks = ( chunk ) =>
+                # Parse the input.. not the most elegant piece of code, but it works.
+                input = chunk.toString().replace RegExp( "\n$" ), ""
+
+                # Handle black lines gracefully.
+                if input is ""
+                    return @prompt( )
+                
+                # Parse and run the command. When it is finished, prompt again.
+                @parse_and_run input, ( ) =>
+                    @prompt( )
+
+            # Create the listener on input data.
+            @in.on "data", handle_input_chunks
+
+            # When we get stopped, remove the input listener.
+            @once "stopped", ( ) =>
+                @in.removeListener "data", handle_input_chunks
+                #log "Removed the input listeners for shell."
 
     prompt: ( ) ->
         _cwd = @environment.get "cwd"
-        
         @out.write "#{@_id}:#{_cwd}>"
 
     parse_and_run: ( input, cb ) ->
 
         # Builtins..
         if input is "quit"
-            log "Stopping.."
+            #log "Stopping.."
             return @stop( )
 
 
-        # Find the path of the given coffee file.. or keep the _valid_path set
-        # to false.
+        # Find the path of the given coffee file..
+        # or keep the _valid_path set to false.
         _valid_path = false
         for _path in @environment.get( "path" )
             _possible_path = path.join _path, "#{input}.coffee"
@@ -55,16 +85,5 @@ class shell extends orange.OrangeRunnable
 
         # Start the program..
         _o.start( )
-
-    runtime_loop: ( ) ->
-        @prompt( )
-
-        @in.on "data", ( chunk ) =>
-            input = chunk.toString( ).replace RegExp( "\n$"), ""
-            if input is ""
-                return @prompt()
-
-            @parse_and_run input, ( ) =>
-                @prompt( )
 
 exports.shell = shell

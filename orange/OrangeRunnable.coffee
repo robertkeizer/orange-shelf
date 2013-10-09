@@ -6,33 +6,36 @@ class OrangeRunnable extends OrangeObject
         super( )
 
     start: ( args, cb ) ->
-        if cb
-            @addListener "started", cb
 
-        @started( )
+        # Cannot start if already running.
+        if @is_running( )
+            return cb "Already running"
+            
+        # If a cb has been specified. Add it to the started event.
+        if cb
+            @once "started", cb
+
+        # Set the arguments that have been specified to be
+        # instance wide.
+        @_args  = args
+        
+        # We're now going to be 'started', so set the flag.
+        # Also set the time started and emit the started event.
+        @_running = true
+        @_time_started  = new Date( )
+        @emit "started"
 
     stop: ( cb ) ->
         if cb
-            @addListener "stopped", cb
-
-        # This is not correct.. the idea
-        # would be to generate multiple outputs
-        # from a single input. Hence we shouldn't
-        # remove all the listeners.. 
-        #@in.removeAllListeners( )
+            @once "stopped", cb
 
         @_running = false
         @emit "stopped"
-
-    is_running: ( cb ) ->
+        
+    is_running: ( ) ->
         if not @_running?
             return false
         @_running
-
-    started: ( ) ->
-        @_running       = true
-        @_time_started  = new Date( )
-        @emit "started"
 
     error: ( msg ) ->
         @err.write msg
