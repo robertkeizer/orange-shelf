@@ -19,9 +19,10 @@ class OrangeRunnable extends OrangeObject
         # would be to generate multiple outputs
         # from a single input. Hence we shouldn't
         # remove all the listeners.. 
-        @in.removeAllListeners
+        #@in.removeAllListeners( )
 
-        @stopped( )
+        @_running = false
+        @emit "stopped"
 
     is_running: ( cb ) ->
         if not @_running?
@@ -32,10 +33,6 @@ class OrangeRunnable extends OrangeObject
         @_running       = true
         @_time_started  = new Date( )
         @emit "started"
-
-    stopped: ( ) ->
-        @_running = false
-        @emit "stopped"
 
     error: ( msg ) ->
         @err.write msg

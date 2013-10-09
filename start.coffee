@@ -11,7 +11,7 @@ env.set "path", [ "runtime/" ]
 
 # Start a shell in that environment, using stdin and stdout.
 process.stdin.resume( )
-yas = new shell.Shell env, process.stdin, process.stdout, process.stderr
+yas = new shell.shell env, process.stdin, process.stdout, process.stderr
 
 yas.start null, ( ) ->
     log "Started yas shell!"
